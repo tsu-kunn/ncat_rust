@@ -1,3 +1,9 @@
+use isatty::stdin_isatty;
+
 fn main() {
-    println!("Hello, world!");
+    if stdin_isatty() {
+        println!("terminal");
+    } else {
+        println!("pipeline");
+    }
 }
