@@ -11,8 +11,6 @@ fn main() {
     let mut out = std::io::stdout().lock();
 
     if stdin_isatty() {
-        println!("terminal");
-
         let args: Vec<String> = std::env::args().collect();
 
         println!("{:?}, {}", args, args.len());
