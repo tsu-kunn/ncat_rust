@@ -2,13 +2,58 @@ use std::io::{Write, BufRead};
 use std::fs::File;
 use isatty::stdin_isatty;
 
+const COLORS: [&str; 8] = ["\x1b[30m", "\x1b[31m", "\x1b[32m", "\x1b[33m", "\x1b[34m", "\x1b[35m", "\x1b[36m", "\x1b[37m"];
+
+enum ConsoleColor {
+    Black = 0,
+    Red,
+    Green,
+    Yellow,
+    Blue,
+    Magenta,
+    Cyan,
+    White,
+}
+
 macro_rules! line_number_output {
     ($o: ident, $l: expr, $s: expr) => (writeln!($o, "{0: >5}: {1:}", $l, $s).unwrap())
+}
+
+fn get_color(color: ConsoleColor) -> &'static str {
+    match color {
+        ConsoleColor::Black => "\x1b[30m",
+        ConsoleColor::Red => "\x1b[31m",
+        ConsoleColor::Green => "\x1b[32m",
+        ConsoleColor::Yellow => "\x1b[33m",
+        ConsoleColor::Blue =>  "\x1b[34m",
+        ConsoleColor::Magenta => "\x1b[35m",
+        ConsoleColor::Cyan => "\x1b[36m",
+        ConsoleColor::White => "\x1b[37m",
+    }
+}
+
+fn get_back_color(color: ConsoleColor) -> &'static str {
+    match color {
+        ConsoleColor::Black => "\x1b[40m",
+        ConsoleColor::Red => "\x1b[41m",
+        ConsoleColor::Green => "\x1b[42m",
+        ConsoleColor::Yellow => "\x1b[43m",
+        ConsoleColor::Blue =>  "\x1b[44m",
+        ConsoleColor::Magenta => "\x1b[45m",
+        ConsoleColor::Cyan => "\x1b[46m",
+        ConsoleColor::White => "\x1b[47m",
+    }
+}
+
+fn ncat_errmsg(msg: String) {
+    println!("{}[ncat error]{}: {}", get_color(ConsoleColor::Red), get_color(ConsoleColor::White), msg);
 }
 
 fn main() {
     let mut cnt = 1;
     let mut out = std::io::stdout().lock();
+
+    // let err_msg = format!("{}[ncat error]{}: ", get_color(ConsoleColor::Red), get_color(ConsoleColor::White));
 
     if stdin_isatty() {
         let args: Vec<String> = std::env::args().collect();
@@ -22,7 +67,7 @@ fn main() {
         let f = match f {
             Ok(file) => file,
             Err(error) => {
-                println!("[ncat error]: {}", error);
+                ncat_errmsg(error.to_string());
                 std::process::exit(1);
             }
         };
