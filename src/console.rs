@@ -41,6 +41,10 @@ pub fn ncat_errmsg(msg: String) {
     println!("{}[ncat error]{}: {}", get_color(Colors::Red), get_color(Colors::White), msg);
 }
 
+pub fn ncat_warnmsg(msg: String) {
+    println!("{}[ncat warning]{}: {}", get_color(Colors::Yellow), get_color(Colors::White), msg);
+}
+
 // マクロはルート(ncat::)公開となるため use キーワードを使って省略できない
 #[macro_export]
 macro_rules! line_number_output {
