@@ -4,6 +4,7 @@ use isatty::stdin_isatty;
 
 use ncat::console;
 
+const APP_NAME: &str = "ncat";
 
 fn main() {
     let mut cnt = 1;
@@ -16,14 +17,17 @@ fn main() {
 
         println!("{:?}, {}", args, args.len());
 
-        if args.len() < 2 { std::process::exit(1) }
+        if args.len() < 2 {
+            console::warning_message(APP_NAME, String::from("File must be specified."));
+            std::process::exit(1)
+        }
 
         let fname = &args[1];
         let f = File::open(fname);
         let f = match f {
             Ok(file) => file,
             Err(error) => {
-                console::ncat_errmsg(error.to_string());
+                console::error_message(APP_NAME, error.to_string());
                 std::process::exit(1);
             }
         };
