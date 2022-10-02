@@ -3,12 +3,15 @@ use std::fs::File;
 use isatty::stdin_isatty;
 
 use ncat::console;
+use ncat::option;
 
 const APP_NAME: &str = "ncat";
 
 fn main() {
     let mut cnt = 1;
     let mut out = std::io::stdout().lock();
+
+    let opt = option::OptionParam::new();
 
     // let err_msg = format!("{}[ncat error]{}: ", get_color(ConsoleColor::Red), get_color(ConsoleColor::White));
 
@@ -17,9 +20,11 @@ fn main() {
 
         println!("{:?}, {}", args, args.len());
 
-        if args.len() < 2 {
+        if !opt.check_args() {
             console::warning_message(APP_NAME, String::from("File must be specified."));
-            std::process::exit(1)
+            print!("\n");
+            opt.info_draw();
+            std::process::exit(0)
         }
 
         let fname = &args[1];
